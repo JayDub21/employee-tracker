@@ -110,18 +110,21 @@ newEmployeePrompt = () => {
                     if (err) throw err;
                     console.log(`${first_name}'s Profile was created successfully!`);
 
-                }).then(() => {
-                    startProgram();
                 })
-        }
+        };
+
+        newEmployee();
+
+    }).then(() => {
+
+        startProgram();
     })
 };
 
 
 
-
 //=================================================
-//  New Role Function Prompts for user input,
+//    New Role Function Prompts for user input,
 //     then adds input data to employee table
 //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 newRolePrompt = () => {
@@ -169,12 +172,61 @@ newRolePrompt = () => {
                 function (err) {
 
                     if (err) throw err;
-                    console.log(`${first_name}'s Profile was created successfully!`);
+                    console.log(`New ${title} Role was created successfully!`);
 
-                }).then(() => {
-                    startProgram();
                 })
-        }
+        };
+
+        newRole();
+
+    }).then(() => {
+
+        startProgram();
     })
 };
 
+
+
+//=================================================
+// New Department Function Prompts for user input,
+//     then adds input data to employee table
+//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+newDeptPrompt = () => {
+    inquirer.prompt([
+        {
+            name: 'deptName',
+            type: 'input',
+            message: 'What is the name of the new Department?'
+        },
+
+    ]).then((data) => {
+
+        // Set first_name to var
+        const deptName = data.deptName;
+        console.log(deptName);
+
+    }).then(() => {
+
+        newDept = () => {
+
+            connection.query(
+
+                "INSERT INTO departments SET ?",
+                {
+                    deptName: deptName,
+                },
+                function (err) {
+
+                    if (err) throw err;
+                    console.log(`New ${deptName} Department was created successfully!`);
+
+                })
+        };
+
+        newDept();
+
+    }).then(() => {
+
+        startProgram();
+    })
+};
