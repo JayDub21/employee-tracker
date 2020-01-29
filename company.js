@@ -54,6 +54,11 @@ startProgram = () => {
 
 startProgram();
 
+
+//=================================================
+//  New Employee Function Prompts for user input,
+//     then adds input data to employee table
+//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 newEmployeePrompt = () => {
     inquirer.prompt([
         {
@@ -99,6 +104,67 @@ newEmployeePrompt = () => {
                     first_name: first_name,
                     last_name: last_name,
                     role: role
+                },
+                function (err) {
+
+                    if (err) throw err;
+                    console.log(`${first_name}'s Profile was created successfully!`);
+
+                }).then(() => {
+                    startProgram();
+                })
+        }
+    })
+};
+
+
+
+
+//=================================================
+//  New Role Function Prompts for user input,
+//     then adds input data to employee table
+//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+newRolePrompt = () => {
+    inquirer.prompt([
+        {
+            name: 'title',
+            type: 'input',
+            message: 'What is the new role title?'
+        },
+        {
+            name: 'salary',
+            type: 'input',
+            message: 'What is the salary for this position?'
+        },
+        {
+            name: 'department_id',
+            type: 'input',
+            message: 'What is the department ID# for the role?'
+        }
+
+    ]).then((data) => {
+
+        // Set first_name to var
+        const title = data.title;
+        console.log(title);
+
+        const salary = data.salary;
+        console.log(salary);
+
+        const department_id = data.department_id;
+        console.log(department_id);
+
+    }).then(() => {
+
+        newRole = () => {
+
+            connection.query(
+
+                "INSERT INTO role SET ?",
+                {
+                    title: title,
+                    salary: salary,
+                    department_id: department_id
                 },
                 function (err) {
 
