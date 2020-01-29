@@ -7,20 +7,20 @@ const mysql = require('mysql');
 //        Setting Up Connection Variable
 //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 
-// const connection = mysql.createConnection({
-//     host: "localhost",
-//     port: 3306,
-//     user: "root",
-//     password: "dbpassword",
-//     database: "company_db"
-// });
+const connection = mysql.createConnection({
+    host: "localhost",
+    port: 3306,
+    user: "root",
+    password: "dbpassword",
+    database: "company_db"
+});
 
-// connection.connect(function (err) {
-//     if (err) throw err;
-//     console.log("connected as id " + connection.threadId);
+connection.connect(function (err) {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
 
-//     startProgram();
-// });
+    startProgram();
+});
 
 
 // Start by asking which operation the User would like to perform
@@ -52,7 +52,8 @@ startProgram = () => {
     })
 };
 
-startProgram();
+// 
+
 
 
 //=================================================
@@ -95,8 +96,7 @@ newEmployeePrompt = () => {
 
     }).then(() => {
 
-        newEmployee = () => {
-
+        return new Promise((resolve, reject) => {
             connection.query(
 
                 "INSERT INTO employee SET ?",
@@ -107,13 +107,16 @@ newEmployeePrompt = () => {
                 },
                 function (err) {
 
-                    if (err) throw err;
+                    if (err) {
+                        return reject(err);
+                    }
+
                     console.log(`${first_name}'s Profile was created successfully!`);
+                    resolve();
 
                 })
-        };
+        })
 
-        newEmployee();
 
     }).then(() => {
 
@@ -159,7 +162,7 @@ newRolePrompt = () => {
 
     }).then(() => {
 
-        newRole = () => {
+        return new Promise((resolve, reject) => {
 
             connection.query(
 
@@ -171,13 +174,14 @@ newRolePrompt = () => {
                 },
                 function (err) {
 
-                    if (err) throw err;
+                    if (err) {
+                        return reject(err);
+                    }
+
                     console.log(`New ${title} Role was created successfully!`);
-
+                    resolve();
                 })
-        };
-
-        newRole();
+        })
 
     }).then(() => {
 
@@ -207,7 +211,7 @@ newDeptPrompt = () => {
 
     }).then(() => {
 
-        newDept = () => {
+        return new Promise((resolve, reject) => {
 
             connection.query(
 
@@ -217,13 +221,15 @@ newDeptPrompt = () => {
                 },
                 function (err) {
 
-                    if (err) throw err;
+                    if (err) {
+                        return reject(err);
+                    }
+
                     console.log(`New ${deptName} Department was created successfully!`);
-
+                    resolve();
                 })
-        };
+        })
 
-        newDept();
 
     }).then(() => {
 
