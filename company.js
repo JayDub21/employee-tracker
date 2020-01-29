@@ -86,7 +86,29 @@ newEmployeePrompt = () => {
         const role = data.role;
         console.log(role);
 
-        // newEmployee();
 
+
+    }).then(() => {
+
+        newEmployee = () => {
+
+            connection.query(
+
+                "INSERT INTO employee SET ?",
+                {
+                    first_name: first_name,
+                    last_name: last_name,
+                    role: role
+                },
+                function (err) {
+
+                    if (err) throw err;
+                    console.log(`${first_name}'s Profile was created successfully!`);
+
+                }).then(() => {
+                    startProgram();
+                })
+        }
     })
 };
+
