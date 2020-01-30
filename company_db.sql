@@ -6,7 +6,7 @@ USE company_db;
 
 CREATE TABLE departments (
   id INT NOT NULL AUTO_INCREMENT,
-  name VARCHAR(30) NULL,
+  deptName VARCHAR(30) NULL,
   PRIMARY KEY (id)
 );
 

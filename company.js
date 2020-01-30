@@ -37,7 +37,8 @@ startProgram = () => {
                 'Add a New Department',
                 'View All Employees',
                 'View All Roles',
-                'View All Departments'
+                'View All Departments',
+                'Update Employee Role',
             ]
 
         }
@@ -46,8 +47,25 @@ startProgram = () => {
         const operation = data.operation;
         switch (operation) {
             case 'Add a New Employee':
-                newEmployeePrompt();
-                break;
+                return newEmployeePrompt()
+
+
+            case 'Add a New Role':
+                return newRolePrompt()
+
+            case 'Add a New Department':
+                return newDeptPrompt()
+
+            case 'View All Employees':
+                return viewEmployee()
+
+            case 'View All Roles':
+                return viewRoles()
+
+            case 'View All Departments':
+                return viewDept()
+            case 'Update Employee Role':
+                return updateEmployeeRole()
         }
     })
 };
@@ -61,6 +79,7 @@ startProgram = () => {
 //     then adds input data to employee table
 //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 newEmployeePrompt = () => {
+    // viewRoles()
     inquirer.prompt([
         {
             name: 'first_name',
@@ -73,56 +92,92 @@ newEmployeePrompt = () => {
             message: 'What is your employees last name?'
         },
         {
-            name: 'role',
-            type: 'input',
+            name: 'role_id',
+            type: 'number',
             // Need to replace with a list where message displays created roles
-            message: 'What is the employees role?'
+            message: 'What is the Role ID# for this employee?'
         }
+
     ]).then((data) => {
 
-        // Set first_name to var
-        const first_name = data.first_name;
-        console.log(first_name);
+        connection.query(
 
-        // Set lasnt_name to var
-        const last_name = data.last_name;
-        console.log(last_name);
+            "INSERT INTO employee SET ?",
+            {
+                first_name: data.first_name,
+                last_name: data.last_name,
+                role_id: data.role_id
+            },
+            function (err) {
 
-        // Set role to var
-        const role = data.role;
-        console.log(role);
+                if (err) throw err;
+                console.log(`New employee ${data.first_name} was created successfully!`);
 
+            })
 
 
     }).then(() => {
 
-        return new Promise((resolve, reject) => {
-            connection.query(
+        viewEmployee();
+    })
+};
 
-                "INSERT INTO employee SET ?",
-                {
-                    first_name: first_name,
-                    last_name: last_name,
-                    role: role
-                },
+
+
+//======================================================
+// updateEmployeeRole Function Prompts for user input,
+//     then adds input data to employee table
+//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+updateEmployeeRole = () => {
+
+    connection.query("SELECT * FROM employee", function (err, res) {
+        let nameList = [];
+        console.table(res);
+
+        for (let i = 0; i < res.length; i++) {
+            nameList.push(res[i].id);
+        }
+        console.log("name list: " + nameList);
+
+        inquirer.prompt([
+            {
+                name: 'currID',
+                type: 'list',
+                message: 'What is the ID of the employee you would like to update?',
+                choices: nameList
+            },
+
+            {
+                name: 'updateRole',
+                type: 'number',
+                message: 'What is the new Rold ID# ?',
+
+            },
+
+        ]).then((data) => {
+            console.log("data choices: " + data.currID);
+            console.log(data.updateRole);
+            const newRoleId = data.updateRole
+            const currID = data.currID
+
+            //UPDATE employee SET role_id = newRoleID WHERE id = currID
+            connection.query('UPDATE employee SET ? WHERE ?',
+                [
+                    { role_id: newRoleId },
+
+                    { id: currID }
+                ],
+
                 function (err) {
 
-                    if (err) {
-                        return reject(err);
-                    }
-
-                    console.log(`${first_name}'s Profile was created successfully!`);
-                    resolve();
+                    if (err) throw err;
+                    console.log(`New employee Role #${data.updateRole} was created successfully!`);
 
                 })
         })
-
-
-    }).then(() => {
-
-        startProgram();
     })
-};
+}
+
 
 
 
@@ -150,42 +205,26 @@ newRolePrompt = () => {
 
     ]).then((data) => {
 
-        // Set first_name to var
-        const title = data.title;
-        console.log(title);
+        connection.query(
 
-        const salary = data.salary;
-        console.log(salary);
+            "INSERT INTO role SET ?",
+            {
+                title: data.title,
+                salary: data.salary,
+                department_id: data.department_id
+            },
+            function (err) {
 
-        const department_id = data.department_id;
-        console.log(department_id);
+                if (err) {
+                    return reject(err);
+                }
+                else {
+                    console.log(`New ${data.title} Role was created successfully!`);
+                }
 
-    }).then(() => {
 
-        return new Promise((resolve, reject) => {
+            })
 
-            connection.query(
-
-                "INSERT INTO role SET ?",
-                {
-                    title: title,
-                    salary: salary,
-                    department_id: department_id
-                },
-                function (err) {
-
-                    if (err) {
-                        return reject(err);
-                    }
-
-                    console.log(`New ${title} Role was created successfully!`);
-                    resolve();
-                })
-        })
-
-    }).then(() => {
-
-        startProgram();
     })
 };
 
@@ -205,34 +244,73 @@ newDeptPrompt = () => {
 
     ]).then((data) => {
 
-        // Set first_name to var
-        const deptName = data.deptName;
-        console.log(deptName);
-
-    }).then(() => {
-
-        return new Promise((resolve, reject) => {
-
-            connection.query(
-
-                "INSERT INTO departments SET ?",
-                {
-                    deptName: deptName,
-                },
-                function (err) {
-
-                    if (err) {
-                        return reject(err);
-                    }
-
-                    console.log(`New ${deptName} Department was created successfully!`);
-                    resolve();
-                })
-        })
 
 
-    }).then(() => {
+        connection.query(
 
-        startProgram();
+            "INSERT INTO departments SET ?",
+            {
+                deptName: data.deptName,
+            },
+            function (err) {
+
+                if (err) {
+                    return reject(err);
+                }
+                else {
+                    console.log(`New ${data.deptName} Department was created successfully!`);
+                }
+
+
+            })
     })
 };
+
+
+
+//=================================================
+//   viewRoles Function Prompts for user input,
+//     then adds input data to employee table
+//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+viewRoles = () => {
+
+    connection.query("SELECT * FROM role", function (err, res) {
+        if (err) throw err;
+
+        console.table(res);
+    })
+
+};
+
+
+
+//=================================================
+//   viewDept Function Prompts for user input,
+//     then adds input data to employee table
+//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+viewDept = () => {
+
+    connection.query("SELECT * FROM departments", function (err, res) {
+        if (err) throw err;
+
+        console.table(res);
+    })
+
+};
+
+
+
+//=================================================
+//   viewEmployee Function Prompts for user input,
+//     then adds input data to employee table
+//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+viewEmployee = () => {
+
+    connection.query("SELECT * FROM employee", function (err, res) {
+        if (err) throw err;
+
+        console.table(res);
+    })
+
+};
+
