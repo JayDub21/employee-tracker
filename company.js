@@ -41,6 +41,7 @@ startProgram = () => {
                 'View All Roles',
                 'View All Departments',
                 'Update Employee Role',
+                'Update Employee Manager'
             ]
 
         }
@@ -65,8 +66,12 @@ startProgram = () => {
 
             case 'View All Departments':
                 return viewDept()
+
             case 'Update Employee Role':
                 return updateEmployeeRole()
+
+            case 'Update Employee Manager':
+                return updateEmployeeMgr()
         }
     })
 };
@@ -98,11 +103,14 @@ newEmployeePrompt = () => {
             },
             {
                 name: 'role_id',
-                type: 'list',
-                // Need to replace with a list where message displays created roles
+                type: 'number',
                 message: 'What is the Role ID# for this employee?'
+            },
+            {
+                name: 'mgmtID',
+                type: 'number',
+                message: 'What is your Manager ID# ?'
             }
-
         ]).then((data) => {
 
             connection.query(
@@ -111,7 +119,8 @@ newEmployeePrompt = () => {
                 {
                     first_name: data.first_name,
                     last_name: data.last_name,
-                    role_id: data.role_id
+                    role_id: data.role_id,
+                    manager_id: data.mgmtID
                 },
                 function (err) {
 
@@ -181,6 +190,62 @@ updateEmployeeRole = () => {
     })
 }
 
+
+
+
+//======================================================
+// updateEmployeeMgr Function Prompts for user input,
+//     then adds input data to employee table
+//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+updateEmployeeMgr = () => {
+
+    connection.query("SELECT * FROM employee", function (err, res) {
+        let nameList = [];
+
+
+        for (let i = 0; i < res.length; i++) {
+            nameList.push(res[i].id);
+        }
+        console.log("name list: " + nameList);
+
+        inquirer.prompt([
+            {
+                name: 'currID',
+                type: 'list',
+                message: 'What is the ID of the employee you would like to update?',
+                choices: nameList
+            },
+
+            {
+                name: 'updateMgr',
+                type: 'number',
+                message: 'What is the new Manager ID# ?',
+
+            },
+
+        ]).then((data) => {
+            console.log("data choices: " + data.currID);
+            console.log(data.updateMgr);
+            const newMgrId = data.updateMgr
+            const currID = data.currID
+
+            //UPDATE employee SET role_id = newRoleID WHERE id = currID
+            connection.query('UPDATE employee SET ? WHERE ?',
+                [
+                    { manager_id: newMgrId },
+
+                    { id: currID }
+                ],
+
+                function (err) {
+
+                    if (err) throw err;
+                    console.log(`New employee Role #${data.updateRole} was created successfully!`);
+                    startProgram()
+                })
+        })
+    })
+}
 
 
 
