@@ -112,15 +112,12 @@ newEmployeePrompt = () => {
 
                 if (err) throw err;
                 console.log(`New employee ${data.first_name} was created successfully!`);
-
+                startProgram()
             })
 
 
-    }).then(() => {
-
-        viewEmployee();
     })
-};
+}
 
 
 
@@ -172,7 +169,7 @@ updateEmployeeRole = () => {
 
                     if (err) throw err;
                     console.log(`New employee Role #${data.updateRole} was created successfully!`);
-
+                    startProgram()
                 })
         })
     })
@@ -220,6 +217,7 @@ newRolePrompt = () => {
                 }
                 else {
                     console.log(`New ${data.title} Role was created successfully!`);
+                    startProgram();
                 }
 
 
@@ -259,6 +257,7 @@ newDeptPrompt = () => {
                 }
                 else {
                     console.log(`New ${data.deptName} Department was created successfully!`);
+                    startProgram()
                 }
 
 
@@ -278,6 +277,7 @@ viewRoles = () => {
         if (err) throw err;
 
         console.table(res);
+        startProgram()
     })
 
 };
@@ -294,6 +294,7 @@ viewDept = () => {
         if (err) throw err;
 
         console.table(res);
+        startProgram()
     })
 
 };
@@ -310,6 +311,7 @@ viewEmployee = () => {
         if (err) throw err;
 
         console.table(res);
+        startProgram()
     })
 
 };
