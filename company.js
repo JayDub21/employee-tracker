@@ -23,6 +23,8 @@ connection.connect(function (err) {
 });
 
 
+
+
 // Start by asking which operation the User would like to perform
 
 startProgram = () => {
@@ -48,7 +50,6 @@ startProgram = () => {
         switch (operation) {
             case 'Add a New Employee':
                 return newEmployeePrompt()
-
 
             case 'Add a New Role':
                 return newRolePrompt()
@@ -79,43 +80,48 @@ startProgram = () => {
 //     then adds input data to employee table
 //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 newEmployeePrompt = () => {
-    // viewRoles()
-    inquirer.prompt([
-        {
-            name: 'first_name',
-            type: 'input',
-            message: 'What is the employees first name?'
-        },
-        {
-            name: 'last_name',
-            type: 'input',
-            message: 'What is your employees last name?'
-        },
-        {
-            name: 'role_id',
-            type: 'number',
-            // Need to replace with a list where message displays created roles
-            message: 'What is the Role ID# for this employee?'
-        }
 
-    ]).then((data) => {
+    // Show the role table to assist answering role_id?
+    connection.query("SELECT * FROM role", function (err, res) {
+        console.table(res);
 
-        connection.query(
-
-            "INSERT INTO employee SET ?",
+        inquirer.prompt([
             {
-                first_name: data.first_name,
-                last_name: data.last_name,
-                role_id: data.role_id
+                name: 'first_name',
+                type: 'input',
+                message: 'What is the employees first name?'
             },
-            function (err) {
+            {
+                name: 'last_name',
+                type: 'input',
+                message: 'What is your employees last name?'
+            },
+            {
+                name: 'role_id',
+                type: 'list',
+                // Need to replace with a list where message displays created roles
+                message: 'What is the Role ID# for this employee?'
+            }
 
-                if (err) throw err;
-                console.log(`New employee ${data.first_name} was created successfully!`);
-                startProgram()
-            })
+        ]).then((data) => {
+
+            connection.query(
+
+                "INSERT INTO employee SET ?",
+                {
+                    first_name: data.first_name,
+                    last_name: data.last_name,
+                    role_id: data.role_id
+                },
+                function (err) {
+
+                    if (err) throw err;
+                    console.log(`New employee ${data.first_name} was created successfully!`);
+                    startProgram()
+                })
 
 
+        })
     })
 }
 
@@ -129,7 +135,7 @@ updateEmployeeRole = () => {
 
     connection.query("SELECT * FROM employee", function (err, res) {
         let nameList = [];
-        console.table(res);
+
 
         for (let i = 0; i < res.length; i++) {
             nameList.push(res[i].id);
