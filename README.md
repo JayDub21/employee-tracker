@@ -2,32 +2,33 @@
 
 ##### A solution for managing a company's employees using node, inquirer, and MySQL.
 
-### Hints
+## To Start App:
+##### To install dependencies type:
+```sh
+npm install
+```
+###### To run application in your terminal  type: 
+```sh
+node company.js
+``` 
 
-* You may wish to include a `seed.sql` file to pre-populate your database. This will make development of individual features much easier.
+## How To Use:
+* Use Up and Down Arrow Keys to Select Desired Operation.
+* Input desired information into Prompts.
+![employee-tracker](images/employee-tracker.gif)
 
-* Focus on getting the basic functionality completed before working on more advanced features.
+## Made Using:
+* Javascript
+* node.js
+* mysql 
+* inquirer
 
-* Review the week's activities for a refresher on MySQL.
-
-* Check out [SQL Bolt](https://sqlbolt.com/) for some extra MySQL help.
-
-
-## Bonus
-
-* The command-line application should allow users to:
-
-  * Update employee managers
-
-  * View employees by manager
-
-  * Delete departments, roles, and employees
-
-  * View the total utilized budget of a department -- ie the combined salaries of all employees in that department
+### Credits
+* Will Jones
+* Israel Medina
 
 ### We can frame this challenge as follows:
-
-```
+```sh
 As a business owner
 I want to be able to view and manage the departments, roles, and employees in my company
 So that I can organize and plan my business
