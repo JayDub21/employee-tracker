@@ -81,7 +81,7 @@ SELECT * FROM role;
 SELECT * FROM employee;
 
 
-SELECT first_name, last_name, title, deptName, salary FROM ((employee
+SELECT role.role_id first_name, last_name, title, deptName, salary FROM ((employee
 INNER JOIN role ON employee.role_id = role.role_id)
 INNER JOIN departments ON role.dept_id = departments.dept_id);
 
