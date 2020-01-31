@@ -28,51 +28,58 @@ connection.connect(function (err) {
 // Start by asking which operation the User would like to perform
 
 startProgram = () => {
-    inquirer.prompt([
-        {
-            name: 'operation',
-            type: 'list',
-            message: 'Which operation would you like to perform?',
-            choices: [
-                'Add a New Employee',
-                'Add a New Role',
-                'Add a New Department',
-                'View All Employees',
-                'View All Roles',
-                'View All Departments',
-                'Update Employee Role',
-                'Update Employee Manager'
-            ]
 
-        }
-    ]).then((data) => {
-        // console.log(data);
-        const operation = data.operation;
-        switch (operation) {
-            case 'Add a New Employee':
-                return newEmployeePrompt()
+    connection.query(`SELECT first_name, last_name, title, deptName, salary FROM ((employee
+        INNER JOIN role ON employee.role_id = role.role_id)
+        INNER JOIN departments ON role.dept_id = departments.dept_id)`, function (err, res) {
+        console.table(res);
 
-            case 'Add a New Role':
-                return newRolePrompt()
+        inquirer.prompt([
+            {
+                name: 'operation',
+                type: 'list',
+                message: 'Which operation would you like to perform?',
+                choices: [
+                    'Add a New Employee',
+                    'Add a New Role',
+                    'Add a New Department',
+                    'Update Employee Role',
+                    'Update Employee Manager',
+                    'View All Employees',
+                    'View All Roles',
+                    'View All Departments'
+                ]
 
-            case 'Add a New Department':
-                return newDeptPrompt()
+            }
+        ]).then((data) => {
+            // console.log(data);
+            const operation = data.operation;
+            switch (operation) {
+                case 'Add a New Employee':
+                    return newEmployeePrompt()
 
-            case 'View All Employees':
-                return viewEmployee()
+                case 'Add a New Role':
+                    return newRolePrompt()
 
-            case 'View All Roles':
-                return viewRoles()
+                case 'Add a New Department':
+                    return newDeptPrompt()
 
-            case 'View All Departments':
-                return viewDept()
+                case 'View All Employees':
+                    return viewEmployee()
 
-            case 'Update Employee Role':
-                return updateEmployeeRole()
+                case 'View All Roles':
+                    return viewRoles()
 
-            case 'Update Employee Manager':
-                return updateEmployeeMgr()
-        }
+                case 'View All Departments':
+                    return viewDept()
+
+                case 'Update Employee Role':
+                    return updateEmployeeRole()
+
+                case 'Update Employee Manager':
+                    return updateEmployeeMgr()
+            }
+        })
     })
 };
 
@@ -266,7 +273,7 @@ newRolePrompt = () => {
             message: 'What is the salary for this position?'
         },
         {
-            name: 'department_id',
+            name: 'dept_id',
             type: 'input',
             message: 'What is the department ID# for the role?'
         }
@@ -279,7 +286,7 @@ newRolePrompt = () => {
             {
                 title: data.title,
                 salary: data.salary,
-                department_id: data.department_id
+                dept_id: data.dept_id
             },
             function (err) {
 
