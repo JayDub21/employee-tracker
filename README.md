@@ -3,6 +3,7 @@
 ##### A solution for managing a company's employees using node, inquirer, and MySQL.
 
 ## To Start App:
+#### Clone or Download Repo
 ##### To install dependencies type:
 ```sh
 npm install
